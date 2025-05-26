@@ -1,0 +1,51 @@
+.auth-container {
+    display: flex;
+    width: 800px;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Form Section */
+.form-container {
+    width: 50%;
+    position: absolute;
+    height: 100%;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95); 
+}
+
+.left-active {
+    left: 0;
+}
+
+.right-active {
+    left: 50%;
+}
+
+.auth-container.signup-active .right-active,
+.auth-container.login-active .left-active {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1); 
+}
+
+/* Toggle Panel */
+.toggle-container {
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(130deg, var(--btn-hover-color), #7E4228 );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transition: transform 0.6s ease-in-out;
+    right: 0;
+}
+
+/* Smooth Slide Effect */
+.auth-container.signup-active .toggle-container {
+    transform: translateX(-100%);
+}
