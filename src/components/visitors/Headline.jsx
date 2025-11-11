@@ -1,6 +1,6 @@
 import { Box, Typography, Divider } from "@mui/material";
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import apiClient from '../../lib/api';
 
 const Headline = () => {
     const [notifications, setNotifications] = useState([]);
@@ -9,12 +9,11 @@ const Headline = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const res = await axios.get('http://40.81.232.21:2025/api/fetch/announcements/latest', {
-                    headers: { 'x-api-key': 'visitor-key' }
-                });
+                const res = await apiClient.get('/fetch/announcements/latest');
                 setNotifications(res.data || []);
             } catch (error) {
                 console.error("❌ Error Fetching Announcements:", error);
+                setNotifications([]);
             }
         };
 

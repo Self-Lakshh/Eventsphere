@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, IconButton, Stack, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link } from "@mui/material";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
+import apiClient from "../../lib/api";
 
 function AnnouncementBar() {
     const [announcements, setAnnouncements] = useState([]);
@@ -12,9 +12,7 @@ function AnnouncementBar() {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get("http://40.81.232.21:2025/api/admin/announcements", {
-                    headers: { "x-api-key": "admin-secret-key" }
-                });
+                const response = await apiClient.get('/admin/announcements');
                 setAnnouncements(response.data || []);
             } catch (error) {
                 console.error("Error fetching announcements:", error.response?.data || error.message);
@@ -37,9 +35,7 @@ function AnnouncementBar() {
     const handleConfirmDelete = async () => {
         if (!selectedAnnouncement) return;
         try {
-            const response = await axios.delete(`http://40.81.232.21:2025/api/admin/announcements/${selectedAnnouncement}`, {
-                headers: { "x-api-key": "admin-secret-key" }
-            });
+            await apiClient.delete(`/admin/announcements/${selectedAnnouncement}`);
 
             setAnnouncements((prev) => prev.filter(a => a.announcement_id !== selectedAnnouncement));
             handleClose();

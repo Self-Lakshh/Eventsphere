@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../lib/api";
 import useLayout from "../../hooks/useLayout";
 import ActionCard from "../../components/admin/ActionCard";
 import EventBar from "../../components/admin/EventBar";
@@ -22,9 +22,7 @@ const Dashboards = () => {
         // Fetch Events and populate dropdown
         const fetchEvents = async () => {
             try {
-                const response = await axios.get("http://40.81.232.21:2025/api/admin/events", {
-                    headers: { "x-api-key": "admin-secret-key" },
-                });
+                const response = await apiClient.get('/admin/events');
 
                 const filteredEvents = response.data.filter(event =>
                     ["ongoing", "upcoming", "draft"].includes(event.event_status)
@@ -32,8 +30,8 @@ const Dashboards = () => {
 
                 setEvents(filteredEvents);
                 setEventOptions(filteredEvents.map(event => ({
-                    label: event.event_name, // Name displayed in dropdown
-                    value: event.event_id    // ID sent in API
+                    label: event.event_name,
+                    value: event.event_id
                 })));
             } catch (error) {
                 console.error("Error fetching events:", error);
@@ -55,16 +53,7 @@ const Dashboards = () => {
                 created_by: memberId
             };
 
-            const response = await axios.post(
-                "http://40.81.232.21:2025/api/admin/events",
-                payload,
-                {
-                    headers: {
-                        "x-api-key": "admin-secret-key",
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            const response = await apiClient.post('/admin/events', payload);
 
             // Update event list and dropdown options
             setEvents(prev => [...prev, response.data]);
@@ -80,22 +69,13 @@ const Dashboards = () => {
 
         try {
             const payload = {
-                event_id: data.eventId, // Ensures correct event ID is sent
+                event_id: data.eventId,
                 message: data.message,
                 link_url: data.linkUrl,
                 created_by: memberId
             };
 
-            await axios.post(
-                "http://40.81.232.21:2025/api/admin/announcements",
-                payload,
-                {
-                    headers: {
-                        "x-api-key": "admin-secret-key",
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            await apiClient.post('/admin/announcements', payload);
 
             console.log("Announcement Created Successfully");
         } catch (error) {
@@ -119,7 +99,7 @@ const Dashboards = () => {
                             ]}
                             onSubmit={handleCreateEvent}
                         />
-                        
+
                         <ActionCard
                             title="Add Announcement"
                             description="Post an announcement"

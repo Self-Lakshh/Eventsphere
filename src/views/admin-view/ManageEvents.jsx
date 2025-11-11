@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../lib/api";
 import EventBar from "../../components/admin/EventBar";
 
 const ManageEvents = () => {
@@ -8,12 +8,11 @@ const ManageEvents = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get("http://40.81.232.21:2025/api/admin/events", {
-                    headers: { "x-api-key": "admin-secret-key" }
-                });
+                const response = await apiClient.get('/admin/events');
                 setEvents(response.data);
             } catch (error) {
                 console.error("Error fetching events:", error);
+                setEvents([]);
             }
         };
 

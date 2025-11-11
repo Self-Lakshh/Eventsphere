@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../lib/api";
 import AnnouncementBar from "../../components/admin/AnnouncementBar";
 
 const ManageAnnouncements = () => {
@@ -8,9 +8,7 @@ const ManageAnnouncements = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get("http://40.81.232.21:2025/api/admin/announcements", {
-                    headers: { "x-api-key": "admin-secret-key" }
-                });
+                const response = await apiClient.get('/admin/announcements');
                 setAnnouncements(response.data);
             } catch (error) {
                 console.error("Error fetching announcements:", error);

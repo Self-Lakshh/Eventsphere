@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../lib/api';
 import EventCarousel from '../../components/visitors/EventCarousel';
 import Sponsors from '../../components/visitors/Sponsors';
 import EventList from '../../components/visitors/EventList';
@@ -28,17 +28,22 @@ const aboutusData = [
 
 function Visitors() {
     const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchCurrentEvents = async () => {
             try {
-                const res = await axios.get('http://40.81.232.21:2025/api/fetch/events/current', {
-                    headers: { 'x-api-key': 'visitor-key' }
-                });
+                setLoading(true);
+                setError(null);
+                const res = await apiClient.get('/fetch/events/current');
                 setEvents(res.data.events || []);
-                // console.log("📅 Current Events:", res.data.events);
             } catch (error) {
                 console.error("❌ Error Fetching Events:", error.response?.data || error.message);
+                setError(error.response?.data?.message || "Failed to load events. Please try again.");
+                setEvents([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -49,16 +54,36 @@ function Visitors() {
         <>
             <div style={{ marginTop: "16px", width: "15%", marginInline: "auto", borderBottom: "2.2px solid var(--secondary-btn-hover-color)", borderRadius: "50px" }}></div>
 
+            {error && (
+                <div style={{
+                    backgroundColor: "#ffebee",
+                    color: "#c62828",
+                    padding: "12px",
+                    margin: "16px",
+                    borderRadius: "8px",
+                    textAlign: "center"
+                }}>
+                    {error}
+                </div>
+            )}
 
-            <div className='mt-3'>
-                <EventCarousel events={events} />
-            </div>
-            <Statistics />
-            <AboutUs content={aboutusData[0]} />
-            <div className='mt-3'>
-                <Sponsors sponsors={sponsorData} />
-            </div>
-            <EventList events={events} />
+            {loading ? (
+                <div style={{ textAlign: "center", padding: "40px" }}>
+                    <p>Loading events...</p>
+                </div>
+            ) : (
+                <>
+                    <div className='mt-3'>
+                        <EventCarousel events={events} />
+                    </div>
+                    <Statistics />
+                    <AboutUs content={aboutusData[0]} />
+                    <div className='mt-3'>
+                        <Sponsors sponsors={sponsorData} />
+                    </div>
+                    <EventList events={events} />
+                </>
+            )}
         </>
     );
 }

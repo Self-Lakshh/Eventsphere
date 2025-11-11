@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../lib/api";
 import Cookies from "js-cookie";
 import useAuth from "../hooks/useAuth";
 
@@ -23,12 +23,7 @@ const AutoLogin = () => {
 
         const autoLogin = async () => {
             try {
-                const response = await axios.get("http://40.81.232.21:2025/api/auth/auto-login", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "x-api-key": "visitor-key",
-                    },
-                });
+                const response = await apiClient.get('/auth/auto-login');
 
                 if (response.data.user) {
                     const user = response.data.user;
@@ -51,7 +46,7 @@ const AutoLogin = () => {
         autoLogin();
     }, [login, logout, navigate]);
 
-    return null; 
+    return null;
 };
 
 export default AutoLogin;

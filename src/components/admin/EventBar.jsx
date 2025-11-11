@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { 
-    Box, Typography, IconButton, Stack, Button, Dialog, DialogActions, 
-    DialogContent, DialogContentText, DialogTitle 
+import {
+    Box, Typography, IconButton, Stack, Button, Dialog, DialogActions,
+    DialogContent, DialogContentText, DialogTitle
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EventIcon from "@mui/icons-material/Event";
-import axios from "axios";
+import apiClient from "../../lib/api";
 
 const statusOptions = ["ongoing", "upcoming", "draft", "completed"];
 
@@ -25,9 +25,7 @@ function EventBar({ events, setEvents }) {
         if (!selectedEvent) return;
         setLoading(true);
         try {
-            await axios.delete(`http://40.81.232.21:2025/api/admin/events/${selectedEvent}`, {
-                headers: { "x-api-key": "admin-secret-key" }
-            });
+            await apiClient.delete(`/admin/events/${selectedEvent}`);
 
             setEvents((prevEvents) => prevEvents.filter(event => event.event_id !== selectedEvent));
             setOpen(false);
@@ -40,7 +38,7 @@ function EventBar({ events, setEvents }) {
 
     return (
         <Box width="100%">
-            <Typography variant="h5" sx={{ color: "var(--text-color)", m: 2, fontWeight: "bold"}}>
+            <Typography variant="h5" sx={{ color: "var(--text-color)", m: 2, fontWeight: "bold" }}>
                 Active Events
             </Typography>
 
